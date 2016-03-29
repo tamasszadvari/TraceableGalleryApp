@@ -1567,8 +1567,6 @@ namespace TraceableGalleryApp.Droid
 			global::FFImageLoading.Forms.Droid.Resource.Styleable.ViewStubCompat_android_layout = global::TraceableGalleryApp.Droid.Resource.Styleable.ViewStubCompat_android_layout;
 			global::PCLStorage.Resource.String.ApplicationName = global::TraceableGalleryApp.Droid.Resource.String.ApplicationName;
 			global::PCLStorage.Resource.String.Hello = global::TraceableGalleryApp.Droid.Resource.String.Hello;
-			global::SQLite.Net.Platform.XamarinAndroid.Resource.String.ApplicationName = global::TraceableGalleryApp.Droid.Resource.String.ApplicationName;
-			global::SQLite.Net.Platform.XamarinAndroid.Resource.String.Hello = global::TraceableGalleryApp.Droid.Resource.String.Hello;
 			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::TraceableGalleryApp.Droid.Resource.Attribute.actionBarSize;
 			global::XLabs.Forms.Resource.Animation.abc_fade_in = global::TraceableGalleryApp.Droid.Resource.Animation.abc_fade_in;
 			global::XLabs.Forms.Resource.Animation.abc_fade_out = global::TraceableGalleryApp.Droid.Resource.Animation.abc_fade_out;

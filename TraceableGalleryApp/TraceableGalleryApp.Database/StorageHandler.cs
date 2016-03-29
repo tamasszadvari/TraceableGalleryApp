@@ -35,6 +35,9 @@ namespace TraceableGalleryApp.Database
         {
             var file = await FileSystem.Current.GetFileFromPathAsync(filePath);
             await file.MoveAsync(FileSystem.Current.LocalStorage.Path + filePath.Substring(filePath.LastIndexOf('/')));
+
+            var deletable = await FileSystem.Current.GetFileFromPathAsync(filePath);
+            await deletable.DeleteAsync();
         }
 
         public async Task<List<string>> GetFilesAsync()

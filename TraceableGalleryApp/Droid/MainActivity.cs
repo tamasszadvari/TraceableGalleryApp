@@ -5,7 +5,6 @@ using Android.Content.PM;
 using Android.OS;
 using FFImageLoading.Forms.Droid;
 using SQLite.Net;
-using SQLite.Net.Platform.XamarinAndroid;
 using XLabs.Caching;
 using XLabs.Caching.SQLite;
 using XLabs.Forms;
@@ -57,9 +56,6 @@ namespace TraceableGalleryApp.Droid
 
             app.Init(this);
 
-            var documents = app.AppDataDirectory;
-            var pathToDatabase = Path.Combine(documents, "traceablegalleryapp.db");
-
             resolverContainer.Register<IDevice>(t => AndroidDevice.CurrentDevice)
                 .Register<IDisplay>(t => t.Resolve<IDevice>().Display)
                 .Register<IFontManager>(t => new FontManager(t.Resolve<IDisplay>()))
@@ -67,10 +63,7 @@ namespace TraceableGalleryApp.Droid
                 .Register<IMediaPicker, MediaPicker>()
                 .Register<IDependencyContainer>(resolverContainer)
                 .Register<IXFormsApp>(app)
-                .Register<ISecureStorage>(t => new KeyVaultStorage(t.Resolve<IDevice>().Id.ToCharArray()))
-                .Register<ICacheProvider>(
-                    t => (ICacheProvider)new SQLiteSimpleCache(new SQLitePlatformAndroid(),
-                        new SQLiteConnectionString(pathToDatabase, true), t.Resolve<IJsonSerializer>()));
+                .Register<ISecureStorage>(t => new KeyVaultStorage(t.Resolve<IDevice>().Id.ToCharArray()));
 
             Resolver.SetResolver(resolverContainer.GetResolver());
         }

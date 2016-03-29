@@ -172,7 +172,7 @@ namespace TraceableGalleryApp.ViewModels
 
                     // The photo is taken and shon on the main page
                     // This won't be neccessary at the app
-                    ImageSource = ImageSource.FromStream(() => mediaFile.Source);
+                    //ImageSource = ImageSource.FromStream(() => mediaFile.Source);
 
                     StorageHandler.Instance.SaveAsync(mediaFile.Path);
 
