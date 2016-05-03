@@ -11,6 +11,7 @@ using XLabs.Platform.Device;
 using XLabs.Platform.Services;
 using XLabs.Platform.Services.Email;
 using XLabs.Platform.Services.Media;
+using XLabs.Platform.Services.Geolocation;
 
 namespace TraceableGalleryApp
 {
@@ -43,6 +44,7 @@ namespace TraceableGalleryApp
             builder.Register<IDevice>(t => AndroidDevice.CurrentDevice);
             builder.Register<IDisplay>(t => t.Resolve<IDevice>().Display);
             builder.Register<IFontManager>(t => new FontManager(t.Resolve<IDisplay>()));
+            builder.RegisterType<Geolocator>().As<IGeolocator>().SingleInstance();
             builder.RegisterType<EmailService>().As<IEmailService>().SingleInstance();
             builder.RegisterType<MediaPicker>().As<IMediaPicker>().SingleInstance();
             builder.RegisterType<StorageHandler>().As<IStorageHandler>().SingleInstance();

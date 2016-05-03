@@ -6,7 +6,7 @@ namespace TraceableGalleryApp.Interfaces
     {
         int Id { get; set; }
         string Path { get; set; }
-        string[] Labels { get; set; }
+        string Labels { get; set; }
         double XPosition { get; set; }
         double YPosition { get; set; }
     }

@@ -21,6 +21,7 @@ namespace TraceableGalleryApp.ViewModels
     {
         readonly IStorageHandler _storageHandler;
         readonly IPictureDatabase _pictureDatabase;
+        readonly IGeolocator _geolocator;
 
         /// <summary>
         /// The _scheduler.
@@ -55,11 +56,12 @@ namespace TraceableGalleryApp.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="CameraViewModel" /> class.
         /// </summary>
-        public CameraViewModel(INavigator navigator, IStorageHandler storageHandler, IPictureDatabase pictureDatabase)
+        public CameraViewModel(INavigator navigator, IStorageHandler storageHandler, IPictureDatabase pictureDatabase, IGeolocator geolocator)
         {
             Navigator = navigator;
             _storageHandler = storageHandler;
             _pictureDatabase = pictureDatabase;
+            _geolocator = geolocator;
 
             Setup();
         }
@@ -123,30 +125,29 @@ namespace TraceableGalleryApp.ViewModels
 
             ImageSource = null;
 
-            return await _mediaPicker
+            var asd = await _mediaPicker
                 .TakePhotoAsync(new CameraMediaStorageOptions { DefaultCamera = CameraDevice.Front, MaxPixelDimension = 400 })
-                .ContinueWith(t => {
+                .ContinueWith(async t => {
                     if (t.IsCompleted && !t.IsCanceled && !t.IsFaulted)
                     {
-                        var geolocator = Resolver.Resolve<IGeolocator>();
                         var mediaFile = t.Result;
 
-                        var locationTask = Task.Run(async () =>  {
-                            return await geolocator.GetPositionAsync(60000);
-                        });
+                        var location = await _geolocator.GetPositionAsync (timeout: 10000, includeHeading: true)
+                            .ContinueWith (task => {
+                                IsBusy = false;
+                                return (task.IsCompleted && !task.IsCanceled && !task.IsFaulted)
+                                    ? task.Result
+                                    : null;
+                            }, _scheduler);
 
-                        locationTask.Wait();
-
-                        if (locationTask.Result != null)
+                        if (location != null)
                         {
-                            var position = locationTask.Result;
-                            var x = position.Longitude;
-                            var y = position.Latitude;
+                            var x = location.Longitude;
+                            var y = location.Latitude;
 
-                            var newPath = Task.Run(async () => await _storageHandler.SaveAsync(mediaFile.Path));
-                            newPath.Wait();
-                            _pictureDatabase.AddRow(new DbPictureData {
-                                Path = newPath.Result,
+                            var newPath = await _storageHandler.SaveAsync(mediaFile.Path);
+                            await _pictureDatabase.AddRow(new DbPictureData {
+                                Path = newPath,
                                 XPosition = x,
                                 YPosition = y
                             });
@@ -157,6 +158,8 @@ namespace TraceableGalleryApp.ViewModels
 
                     return null;
                 }, _scheduler);
+            
+            return await asd;
         }
 
         /// <summary>

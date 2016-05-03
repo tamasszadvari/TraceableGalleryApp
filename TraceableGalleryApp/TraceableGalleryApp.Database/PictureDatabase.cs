@@ -53,8 +53,9 @@ namespace TraceableGalleryApp.Database
 
         public async Task<IList<IDbPictureData>> GetByAnyLabel (IList<string> labels) 
         {
+            // TODO: has to deserialize the x.Labels -> it has to be a JSON array of strings
             var list = await database.Table<DbPictureData> ()
-                .Where (x => labels.Intersect(x.Labels).Any())
+                .Where (x => labels.Contains(x.Labels))
                 .ToListAsync()
                 .ConfigureAwait (false);
 
@@ -63,8 +64,10 @@ namespace TraceableGalleryApp.Database
 
         public async Task<IList<IDbPictureData>> GetByAllLabel (IList<string> labels) 
         {
+            // TODO: has to deserialize the x.Labels -> it has to be a JSON array of strings
+
             var list = await database.Table<DbPictureData> ()
-                .Where (x => labels.Intersect(x.Labels) == x.Labels)
+                .Where (x => labels.Contains(x.Labels))
                 .ToListAsync()
                 .ConfigureAwait (false);
 

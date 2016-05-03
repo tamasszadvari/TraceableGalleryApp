@@ -1,7 +1,7 @@
-﻿using TraceableGalleryApp.Utilities;
+﻿using TraceableGalleryApp.Interfaces;
+using TraceableGalleryApp.Utilities;
 using Xamarin.Forms;
 using XLabs.Enums;
-using TraceableGalleryApp.Interfaces;
 
 namespace TraceableGalleryApp.Views.Pages
 {

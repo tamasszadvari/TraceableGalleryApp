@@ -3,7 +3,7 @@ using TraceableGalleryApp.Interfaces;
 
 namespace TraceableGalleryApp.Database.Models
 {
-    [Table("UserData")]
+    [Table("PictureData")]
     public class DbPictureData : IDbPictureData
     {
         [PrimaryKey, Unique, AutoIncrement, Column("Id")]
@@ -12,8 +12,13 @@ namespace TraceableGalleryApp.Database.Models
         [Column("Path")]
         public string Path { get; set; }
 
+        /// <summary>
+        /// Gets or sets the labels.
+        /// Should be a JSON array!
+        /// </summary>
+        /// <value>The labels.</value>
         [Column("Labels")]
-        public string[] Labels { get; set; }
+        public string Labels { get; set; }
 
         [Indexed, Column("XPosition")]
         public double XPosition { get; set; }

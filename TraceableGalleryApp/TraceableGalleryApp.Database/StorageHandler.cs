@@ -13,10 +13,12 @@ namespace TraceableGalleryApp.Database
         {
             var file = await FileSystem.Current.GetFileFromPathAsync(filePath);
             var newPath = FileSystem.Current.LocalStorage.Path + filePath.Substring(filePath.LastIndexOf('/'));
-            await file.MoveAsync(newPath);
+            if (file != null)
+                await file.MoveAsync(newPath);
 
             var deletable = await FileSystem.Current.GetFileFromPathAsync(filePath);
-            await deletable.DeleteAsync();
+            if (deletable != null)
+                await deletable.DeleteAsync();
 
             return newPath;
         }
@@ -24,7 +26,9 @@ namespace TraceableGalleryApp.Database
         public async Task<List<string>> GetFilesAsync()
         {
             var folder = await FileSystem.Current.GetFolderFromPathAsync(FileSystem.Current.LocalStorage.Path);
-            var files = await folder.GetFilesAsync();
+            IList<IFile> files = new List<IFile>();
+            if (folder != null)
+                files = await folder.GetFilesAsync();
 
             var filePathList = new List<string>();
             foreach (var file in files)
@@ -38,9 +42,9 @@ namespace TraceableGalleryApp.Database
         public async Task<Stream> GetImageSourceAsync(string filePath)
         {
             var file = await FileSystem.Current.GetFileFromPathAsync(filePath);
-            var stream = await file.OpenAsync(FileAccess.Read);
-
-            return stream;
+            return file != null
+                ? await file.OpenAsync(FileAccess.Read)
+                : null;
         }
 
         public async Task DeleteFileAsync(string filePath)
