@@ -9,7 +9,7 @@ namespace TraceableGalleryApp.Interfaces
         Task<List<string>> GetFilesAsync();
         Task<Stream> GetImageSourceAsync(string filePath);
         Task DeleteFileAsync(string filePath);
-        Task SaveAsync(string filePath);
+        Task<string> SaveAsync(string filePath);
     }
 }
 

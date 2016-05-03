@@ -8,11 +8,7 @@ namespace TraceableGalleryApp.ViewModels
         /// <summary>
         /// The image source.
         /// </summary>
-        private ImageSource _imageSource;
-
-        public ImageCellData()
-        {
-        }
+        ImageSource _imageSource;
 
         /// <summary>
         /// Gets or sets the image source.

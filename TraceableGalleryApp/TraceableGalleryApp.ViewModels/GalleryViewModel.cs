@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using TraceableGalleryApp.Database;
-using TraceableGalleryApp.Utilities;
+using TraceableGalleryApp.Interfaces;
 using TraceableGalleryApp.Views.Pages;
 using Xamarin.Forms;
 using XLabs.Forms.Mvvm;
@@ -11,12 +9,20 @@ using XLabs.Forms.Mvvm;
 namespace TraceableGalleryApp.ViewModels
 {
     [ViewType(typeof(ImageGalleryPage))]
-    public class GalleryViewModel : ViewModel
+    public class GalleryViewModel : BaseViewModel
     {
-        private ObservableCollection<ImageCellData> _images;
+        readonly IStorageHandler _storageHandler;
+        readonly IPictureDatabase _pictureDatabase;
+        readonly IEnvironmentInfo _environmentInfo;
 
-        public GalleryViewModel()
+        ObservableCollection<ImageCellData> _images;
+
+        public GalleryViewModel(IStorageHandler storageHandler, IPictureDatabase pictureDatabase, IEnvironmentInfo environmentInfo)
         {
+            _storageHandler = storageHandler;
+            _pictureDatabase = pictureDatabase;
+            _environmentInfo = environmentInfo;
+
             AddImagesCommand = new Command(() => AddImages());
             RemoveImagesCommand = new Command(() => RemoveImages());
             ChangeImageSourceCommand = new Command(ChangeImageSource);
@@ -24,7 +30,7 @@ namespace TraceableGalleryApp.ViewModels
             ChangeImageSource();
 
             Task.Factory.StartNew(async () => {
-                var files = await StorageHandler.Instance.GetFilesAsync();
+                var files = await _storageHandler.GetFilesAsync();
                 foreach (var file in files)
                 {
                     var cellData = new ImageCellData();
@@ -79,7 +85,7 @@ namespace TraceableGalleryApp.ViewModels
         public ObservableCollection<ImageCellData> Images 
         {
             get { return _images; }
-            set { SetProperty (ref _images, value); }
+            set { SetObservableProperty (ref _images, value); }
         }
 
         /// <summary>
@@ -90,11 +96,11 @@ namespace TraceableGalleryApp.ViewModels
         {
             get 
             {
-                var isPortrait = PlatformUtilities.Instance.EnvironmentInfo.ScreenHeight > PlatformUtilities.Instance.EnvironmentInfo.ScreenWidth;
+                var isPortrait = _environmentInfo.ScreenHeight > _environmentInfo.ScreenWidth;
                 var scale = isPortrait ? 2 : 4;
                 var divider = isPortrait ? 3 : 6;
 
-                return PlatformUtilities.Instance.EnvironmentInfo.ScreenWidth/scale-divider; 
+                return _environmentInfo.ScreenWidth/scale-divider; 
             }
         }
     }

@@ -1,16 +1,19 @@
 ﻿using TraceableGalleryApp.Utilities;
 using Xamarin.Forms;
 using XLabs.Enums;
+using TraceableGalleryApp.Interfaces;
 
 namespace TraceableGalleryApp.Views.Pages
 {
     public partial class ImageGalleryPage : ContentPage
     {
-        private Orientation previousOrientation;
+        readonly IEnvironmentInfo _environmentInfo;
+        Orientation previousOrientation;
 
-        public ImageGalleryPage()
+        public ImageGalleryPage(IEnvironmentInfo environmentInfo)
         {
-            previousOrientation = PlatformUtilities.Instance.EnvironmentInfo.ScreenHeight > PlatformUtilities.Instance.EnvironmentInfo.ScreenWidth
+            _environmentInfo = environmentInfo;
+            previousOrientation = _environmentInfo.ScreenHeight > _environmentInfo.ScreenWidth
                 ? Orientation.Portrait
                 : Orientation.Landscape;
 

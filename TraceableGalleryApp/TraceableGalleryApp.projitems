@@ -10,5 +10,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)TraceableGalleryApp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bootstrapper\AUtofacBootstrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bootstrapper\AutofacModule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bootstrapper\Bootstrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bootstrapper\TraceableGalleryAppModule.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Bootstrapper\" />
   </ItemGroup>
 </Project>

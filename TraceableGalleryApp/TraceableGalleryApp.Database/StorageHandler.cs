@@ -8,36 +8,17 @@ namespace TraceableGalleryApp.Database
 {
     public class StorageHandler : IStorageHandler
     {
-        private static volatile StorageHandler instance;
-        private static readonly AsyncLock m_lock = new AsyncLock(); 
-
-        public StorageHandler()
-        {
-        }
-
-        public static StorageHandler Instance
-        {
-            get 
-            {
-                if (instance == null) 
-                {
-                    using (m_lock.Lock()) 
-                    {
-                        instance = new StorageHandler();
-                    }
-                }
-                return instance;
-            }
-        }
-
         #region IStorageHandler implementation
-        public async Task SaveAsync(string filePath)
+        public async Task<string> SaveAsync(string filePath)
         {
             var file = await FileSystem.Current.GetFileFromPathAsync(filePath);
-            await file.MoveAsync(FileSystem.Current.LocalStorage.Path + filePath.Substring(filePath.LastIndexOf('/')));
+            var newPath = FileSystem.Current.LocalStorage.Path + filePath.Substring(filePath.LastIndexOf('/'));
+            await file.MoveAsync(newPath);
 
             var deletable = await FileSystem.Current.GetFileFromPathAsync(filePath);
             await deletable.DeleteAsync();
+
+            return newPath;
         }
 
         public async Task<List<string>> GetFilesAsync()

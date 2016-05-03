@@ -1,12 +1,7 @@
-﻿using System;
-using System.IO;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using FFImageLoading.Forms.Droid;
-using SQLite.Net;
-using XLabs.Caching;
-using XLabs.Caching.SQLite;
 using XLabs.Forms;
 using XLabs.Forms.Services;
 using XLabs.Ioc;
@@ -15,7 +10,9 @@ using XLabs.Platform.Mvvm;
 using XLabs.Platform.Services;
 using XLabs.Platform.Services.Email;
 using XLabs.Platform.Services.Media;
-using XLabs.Serialization;
+using TraceableGalleryApp.Database;
+using TraceableGalleryApp.Interfaces;
+using Xamarin.Forms;
 
 namespace TraceableGalleryApp.Droid
 {
@@ -26,22 +23,12 @@ namespace TraceableGalleryApp.Droid
         Theme = "@style/CustomTheme")]
     public class MainActivity : XFormsApplicationDroid
     {
-        protected override void OnCreate(Bundle bundle)
+        protected override void OnCreate(Bundle savedInstanceState)
         {
-            base.OnCreate(bundle);
-
-            if (!Resolver.IsSet)
-            {
-                this.SetIoc();
-            }
-            else
-            {
-                var app = Resolver.Resolve<IXFormsApp>() as IXFormsApp<XFormsApplicationDroid>;
-                if (app != null) app.AppContext = this;
-            }
+            base.OnCreate(savedInstanceState);
 
             CachedImageRenderer.Init();
-            global::Xamarin.Forms.Forms.Init(this, bundle);
+            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             LoadApplication(new App());
         }
@@ -49,7 +36,7 @@ namespace TraceableGalleryApp.Droid
         /// <summary>
         /// Sets the IoC.
         /// </summary>
-        private void SetIoc()
+        void SetIoc()
         {
             var resolverContainer = new SimpleContainer();
             var app = new XFormsAppDroid();
@@ -63,7 +50,11 @@ namespace TraceableGalleryApp.Droid
                 .Register<IMediaPicker, MediaPicker>()
                 .Register<IDependencyContainer>(resolverContainer)
                 .Register<IXFormsApp>(app)
-                .Register<ISecureStorage>(t => new KeyVaultStorage(t.Resolve<IDevice>().Id.ToCharArray()));
+                .Register<ISecureStorage>(t => new KeyVaultStorage(t.Resolve<IDevice>().Id.ToCharArray()))
+                .Register<IEnvironmentInfo>(DependencyService.Get<IEnvironmentInfo>())
+                .RegisterSingle<IStorageHandler, StorageHandler>()
+                .RegisterSingle<ISQLite, SQLite_Android>()
+                .RegisterSingle<IPictureDatabase, PictureDatabase>();
 
             Resolver.SetResolver(resolverContainer.GetResolver());
         }
