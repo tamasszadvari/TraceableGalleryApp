@@ -79,8 +79,8 @@ namespace TraceableGalleryApp.Database
 
             foreach (var elem in list)
             {
-                var elemLabes = _jsonHelper.Deserialize<List<string>>(elem.Labels);
-                if (elemLabes.Intersect(labels) != null)
+                var elemLabels = _jsonHelper.Deserialize<List<string>>(elem.Labels);
+                if (elemLabels != null && elemLabels.Intersect(labels) != null)
                     sorted.Add(elem);
             }
 

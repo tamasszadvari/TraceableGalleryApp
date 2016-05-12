@@ -79,7 +79,7 @@ namespace TraceableGalleryApp.ViewModels
             get { return _labels; }
             set 
             { 
-                var text = "Labels:\n";
+                var text = "Labels: ";
                 foreach (var label in value)
                 {
                     if (value.IndexOf(label) != 0)

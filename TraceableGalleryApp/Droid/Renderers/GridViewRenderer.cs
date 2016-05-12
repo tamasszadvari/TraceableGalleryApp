@@ -8,10 +8,10 @@ using Android.Content.Res;
 using Android.Graphics;
 using Android.Views;
 using Android.Widget;
+using TraceableGalleryApp.Views.Pages.Controls;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using GridView = TraceableGalleryApp.Views.Pages.Controls.GridView;
-using TraceableGalleryApp.Views.Pages.Controls;
 
 [assembly: ExportRenderer (typeof(GridView), typeof(GridViewRenderer))]
 namespace TraceableGalleryApp.Views.Pages.Controls
@@ -94,7 +94,6 @@ namespace TraceableGalleryApp.Views.Pages.Controls
             collectionView.ItemClick += CollectionViewItemClick;
 
             base.SetNativeControl(collectionView);
-
         }
 
 
@@ -148,7 +147,7 @@ namespace TraceableGalleryApp.Views.Pages.Controls
         /// <param name="e">The <see cref="System.ComponentModel.PropertyChangedEventArgs" /> instance containing the event data.</param>
         private void ElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ItemsSource")
+            if (e.PropertyName == "ItemsSource" && Element != null)
             {
                 if (this.Element.ItemsSource is INotifyCollectionChanged) {
                     (this.Element.ItemsSource as INotifyCollectionChanged).CollectionChanged -= DataCollectionChanged;
@@ -162,7 +161,7 @@ namespace TraceableGalleryApp.Views.Pages.Controls
         /// <param name="e">The <see cref="PropertyChangingEventArgs" /> instance containing the event data.</param>
         private void ElementPropertyChanging(object sender, PropertyChangingEventArgs e)
         {
-            if (e.PropertyName == "ItemsSource")
+            if (e.PropertyName == "ItemsSource" && Element != null)
             {
                 if (this.Element.ItemsSource is INotifyCollectionChanged) {
                     (this.Element.ItemsSource as INotifyCollectionChanged).CollectionChanged += DataCollectionChanged;
@@ -219,7 +218,7 @@ namespace TraceableGalleryApp.Views.Pages.Controls
             var item = this.Element.ItemsSource.Cast<object>().ElementAt(position);
             var viewCellBinded = (Element.ItemTemplate.CreateContent () as ViewCell);
             viewCellBinded.BindingContext = item;
-            var view = RendererFactory.GetRenderer (viewCellBinded.View);
+            var view = Platform.CreateRenderer(viewCellBinded.View);
             // Platform.SetRenderer (viewCellBinded.View, view);
             view.ViewGroup.LayoutParameters = new  Android.Widget.GridView.LayoutParams (Convert.ToInt32(this.Element.ItemWidth), Convert.ToInt32(this.Element.ItemHeight));
             view.ViewGroup.SetBackgroundColor (this.Element.BackgroundColor.ToAndroid());
@@ -387,7 +386,7 @@ namespace TraceableGalleryApp.Views.Pages.Controls
                 return viewCellContainer;
             }
 
-            IVisualElementRenderer renderer = RendererFactory.GetRenderer (viewCell.View);
+            IVisualElementRenderer renderer = Platform.CreateRenderer (viewCell.View);
             //   Platform.SetRenderer (viewCell.View, renderer);
             // viewCell.View.IsPlatformEnabled = true;
             return new GridViewCellRenderer.ViewCellContainer (context, renderer, viewCell,parent);

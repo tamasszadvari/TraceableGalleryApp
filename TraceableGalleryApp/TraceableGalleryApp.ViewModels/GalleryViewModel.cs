@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using TraceableGalleryApp.Interfaces;
+using TraceableGalleryApp.Utilities;
 using TraceableGalleryApp.Views.Pages;
 using Xamarin.Forms;
 using XLabs.Forms.Mvvm;
-using System.Collections.Generic;
-using TraceableGalleryApp.Utilities;
 
 namespace TraceableGalleryApp.ViewModels
 {
@@ -33,9 +33,7 @@ namespace TraceableGalleryApp.ViewModels
             _environmentInfo = environmentInfo;
             _jsonHelper = jsonHelper;
 
-            ChangeImageSourceCommand = new Command(ChangeImageSource);
-
-            ChangeImageSource();
+            Images = new ObservableCollection<ImageCellData>();
 
             MessagingCenter.Subscribe<CameraViewModel,string>(this, StringConstants.NewPictureTakenSysMessage, async (sender, filePath) => {
                 var item = await _pictureDatabase.GetByPath(filePath);
@@ -56,17 +54,6 @@ namespace TraceableGalleryApp.ViewModels
                 if (cellData != null)
                     Images.Add(cellData); 
             }
-        }
-
-        /// <summary>
-        /// Command to swap the image source to a new object
-        /// </summary>
-        /// <value>The change image source command.</value>
-        public Command ChangeImageSourceCommand { get; private set; }
-
-        public void ChangeImageSource()
-        {
-            Images = new ObservableCollection<ImageCellData>();
         }
 
         /// <summary>
@@ -102,24 +89,35 @@ namespace TraceableGalleryApp.ViewModels
             get 
             { 
                 return _searchByLabelCommand ?? (_searchByLabelCommand = new Command(async () => {
-                    var exists = await _pictureDatabase.IsLabelExists(SearchText);
 
-                    if (!exists) {
-                        await Application.Current.MainPage.DisplayAlert("Ooops", "The given label is not exists","Cancel");
-                    }
-                    else {
-                        var pictures = await _pictureDatabase.GetByAnyLabel(new List<string> {SearchText});
-
-                        var newList = new ObservableCollection<ImageCellData>();
-                        foreach (var pic in pictures)
+                    IList<IDbPictureData> pictures;
+                    if (!string.IsNullOrEmpty(SearchText))
+                    {
+                        var exists = await _pictureDatabase.IsLabelExists(SearchText);
+                        if (!exists)
                         {
-                            var cell = MakeImageCell(pic);
-                            if (cell != null)
-                                newList.Add(cell);
+                            await Application.Current.MainPage.DisplayAlert("Ooops", "The given label is not exists","Cancel");
+                            return;
                         }
-
-                        Images = newList;
+                        else
+                        {
+                            pictures = await _pictureDatabase.GetByAnyLabel(new List<string> {SearchText});
+                        }
                     }
+                    else
+                    {
+                        pictures = await _pictureDatabase.GetAll();
+                    }
+                        
+                    var newList = new ObservableCollection<ImageCellData>();
+                    foreach (var pic in pictures)
+                    {
+                        var cell = MakeImageCell(pic);
+                        if (cell != null)
+                            newList.Add(cell);
+                    }
+
+                    Images = newList;
                 })); 
             }
         }
