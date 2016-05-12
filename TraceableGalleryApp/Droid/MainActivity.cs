@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using DLToolkit.Forms.Controls;
 using FFImageLoading.Forms.Droid;
 using XLabs.Forms;
 
@@ -18,6 +19,7 @@ namespace TraceableGalleryApp.Droid
             base.OnCreate(savedInstanceState);
 
             CachedImageRenderer.Init();
+            FlowListView.Init();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             LoadApplication(new App());

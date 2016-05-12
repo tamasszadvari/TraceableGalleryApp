@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using TraceableGalleryApp.Database.Models;
 using TraceableGalleryApp.Interfaces;
+using TraceableGalleryApp.Utilities;
 using TraceableGalleryApp.Views.Pages;
 using Xamarin.Forms;
 using XLabs.Forms.Mvvm;
@@ -10,7 +11,6 @@ using XLabs.Ioc;
 using XLabs.Platform.Device;
 using XLabs.Platform.Services.Geolocation;
 using XLabs.Platform.Services.Media;
-using TraceableGalleryApp.Utilities;
 
 namespace TraceableGalleryApp.ViewModels
 {

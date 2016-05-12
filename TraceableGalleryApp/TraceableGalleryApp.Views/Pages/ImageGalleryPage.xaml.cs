@@ -21,17 +21,6 @@ namespace TraceableGalleryApp.Views.Pages
 
             InitializeComponent();
         }
-
-        void OnItemSelected (object sender, XLabs.EventArgs<object> e)
-        {
-            var ctx = BindingContext as IGalleryViewModel;
-            var item = e.Value as IImageCellData;
-
-            if (ctx == null || item == null)
-                return;
-
-            ctx.OpenImageCommand.Execute(item);
-        }
             
         protected override void OnSizeAllocated(double width, double height)
         {

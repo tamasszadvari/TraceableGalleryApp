@@ -68,22 +68,6 @@ namespace TraceableGalleryApp.ViewModels
             set { SetObservableProperty (ref _images, value); }
         }
 
-        /// <summary>
-        /// Gets the width of the image accordin to the screen's width.
-        /// </summary>
-        /// <value>The width of the image.</value>
-        public double ImageWidth
-        {
-            get 
-            {
-                var isPortrait = _environmentInfo.ScreenHeight > _environmentInfo.ScreenWidth;
-                var scale = isPortrait ? 2 : 4;
-                var divider = isPortrait ? 3 : 6;
-
-                return _environmentInfo.ScreenWidth/scale-divider; 
-            }
-        }
-
         public Command SearchByLabelCommand
         {
             get 
@@ -99,10 +83,8 @@ namespace TraceableGalleryApp.ViewModels
                             await Application.Current.MainPage.DisplayAlert("Ooops", "The given label is not exists","Cancel");
                             return;
                         }
-                        else
-                        {
-                            pictures = await _pictureDatabase.GetByAnyLabel(new List<string> {SearchText});
-                        }
+
+                        pictures = await _pictureDatabase.GetByAnyLabel(new List<string> {SearchText});
                     }
                     else
                     {

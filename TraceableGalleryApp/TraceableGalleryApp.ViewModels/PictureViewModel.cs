@@ -1,9 +1,9 @@
 ﻿using System;
-using TraceableGalleryApp.Views;
-using XLabs.Forms.Mvvm;
-using Xamarin.Forms;
-using TraceableGalleryApp.Interfaces;
 using System.Collections.Generic;
+using TraceableGalleryApp.Interfaces;
+using TraceableGalleryApp.Views;
+using Xamarin.Forms;
+using XLabs.Forms.Mvvm;
 
 namespace TraceableGalleryApp.ViewModels
 {
