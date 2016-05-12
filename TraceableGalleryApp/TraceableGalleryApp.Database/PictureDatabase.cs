@@ -64,25 +64,34 @@ namespace TraceableGalleryApp.Database
 
         public async Task<IList<IDbPictureData>> GetByAnyLabel (IList<string> labels) 
         {
-            // TODO: has to deserialize the x.Labels -> it has to be a JSON array of strings
-            var list = await database.Table<DbPictureData> ()
-                .Where (x => labels.Contains(x.Labels))
-                .ToListAsync()
-                .ConfigureAwait (false);
+            var list = await database.Table<DbPictureData>().ToListAsync().ConfigureAwait(false);
 
-            return list.ToList<IDbPictureData>();
+            IList<IDbPictureData> sorted = new List<IDbPictureData>();
+
+            foreach (var elem in list)
+            {
+                var elemLabes = _jsonHelper.Deserialize<List<string>>(elem.Labels);
+                if (elemLabes.Intersect(labels) != null)
+                    sorted.Add(elem);
+            }
+
+            return sorted;
         }
 
         public async Task<IList<IDbPictureData>> GetByAllLabel (IList<string> labels) 
         {
-            // TODO: has to deserialize the x.Labels -> it has to be a JSON array of strings
+            var list = await database.Table<DbPictureData>().ToListAsync().ConfigureAwait(false);
 
-            var list = await database.Table<DbPictureData> ()
-                .Where (x => labels.Contains(x.Labels))
-                .ToListAsync()
-                .ConfigureAwait (false);
+            IList<IDbPictureData> sorted = new List<IDbPictureData>();
 
-            return list.ToList<IDbPictureData>();
+            foreach (var elem in list)
+            {
+                var elemLabes = _jsonHelper.Deserialize<List<string>>(elem.Labels);
+                if (elemLabes.Intersect(labels) == labels)
+                    sorted.Add(elem);
+            }
+
+            return sorted;
         }
 
         public async Task<IDbPictureData> GetByPosition (double x, double y) 
@@ -131,7 +140,7 @@ namespace TraceableGalleryApp.Database
                 }
             }
 
-            return (IList<string>)ret;
+            return ret.ToList<string>();
         }
 
         public async Task<bool> IsLabelExists(string label)

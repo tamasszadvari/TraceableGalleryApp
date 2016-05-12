@@ -17,6 +17,7 @@
 			</StackLayout>
 			<controls:GridView
 							x:Name="ImageGrid"
+							ItemSelected="OnItemSelected"
 							ItemsSource="{Binding Images}"
 							ItemWidth="{Binding ImageWidth}"
 							ItemHeight="{Binding ImageWidth}"

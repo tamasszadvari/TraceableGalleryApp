@@ -129,8 +129,8 @@ namespace TraceableGalleryApp.ViewModels
                 return _openImageCommand ?? (_openImageCommand = new Command<IImageCellData>(async item =>
                     await _navigator.PushAsync<PictureViewModel>(vm => {
                         vm.ImgSource = item.ImageSource;
-                        vm.LongitudeText = item.Longitude.ToString();
-                        vm.LatitudeText = item.Latitude.ToString();
+                        vm.LongitudeText = "Longitude: " + item.Longitude;
+                        vm.LatitudeText = "Latitude: " + item.Latitude;
                         vm.Labels = item.Labels;
                     })
                 ));

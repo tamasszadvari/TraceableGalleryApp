@@ -11,17 +11,19 @@ namespace TraceableGalleryApp.ViewModels
     public class PictureViewModel : BaseViewModel
     {
         readonly IPictureDatabase _pictureDatabase;
+        readonly IJsonHelper _jsonHelper;
         string _addText;
         string _longitudeText;
         string _latiudeText;
         string _labelsText;
-        Command _searchByLabelCommand;
+        Command _addLabelCommand;
         ImageSource _imgSource;
         List<string> _labels;
 
-        public PictureViewModel(IPictureDatabase pictureDatabase)
+        public PictureViewModel(IPictureDatabase pictureDatabase, IJsonHelper jsonHelper)
         {
             _pictureDatabase = pictureDatabase;
+            _jsonHelper = jsonHelper;
         }
 
         public string AddText
@@ -52,8 +54,16 @@ namespace TraceableGalleryApp.ViewModels
         {
             get 
             { 
-                return _searchByLabelCommand ?? (_searchByLabelCommand = new Command(async () => {
-                    var exists = await _pictureDatabase.IsLabelExists(AddText);
+                return _addLabelCommand ?? (_addLabelCommand = new Command(async () => {
+                    var newLabels = Labels;
+                    newLabels.Add(AddText);
+                    Labels = newLabels;
+                    var path = (ImgSource as FileImageSource).File;
+                    var dbItem = await _pictureDatabase.GetByPath(path);
+                    dbItem.Labels = _jsonHelper.Serialize(newLabels);
+                    _pictureDatabase.UpdateValue(dbItem);
+
+                    AddText = "";
                 })); 
             }
         }
