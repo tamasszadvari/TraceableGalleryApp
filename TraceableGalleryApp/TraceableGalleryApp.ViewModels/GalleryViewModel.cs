@@ -6,6 +6,7 @@ using TraceableGalleryApp.Views.Pages;
 using Xamarin.Forms;
 using XLabs.Forms.Mvvm;
 using System.Collections.Generic;
+using TraceableGalleryApp.Utilities;
 
 namespace TraceableGalleryApp.ViewModels
 {
@@ -36,25 +37,26 @@ namespace TraceableGalleryApp.ViewModels
 
             ChangeImageSource();
 
+            MessagingCenter.Subscribe<CameraViewModel,string>(this, StringConstants.NewPictureTakenSysMessage, async (sender, filePath) => {
+                var item = await _pictureDatabase.GetByPath(filePath);
+                var cellData = MakeImageCell(item);
+                if (cellData != null)
+                    Images.Add(cellData); 
+            });
+
             Task.Factory.StartNew(LoadImages);
         }
 
         async void LoadImages()
         {
-            var files = await _storageHandler.GetFilesAsync();
-            foreach (var file in files)
+            var dbItems = await _pictureDatabase.GetAll();
+            foreach (var item in dbItems)
             {
-                var dbObject = await _pictureDatabase.GetByPath(file);
-
-                if (dbObject != null)
-                {
-                    var cellData = MakeImageCell(dbObject);
-                    if (cellData != null)
-                        Images.Add(cellData);   
-                }
+                var cellData = MakeImageCell(item);
+                if (cellData != null)
+                    Images.Add(cellData); 
             }
         }
-            
 
         /// <summary>
         /// Command to swap the image source to a new object

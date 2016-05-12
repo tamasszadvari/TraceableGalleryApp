@@ -27,7 +27,7 @@ namespace TraceableGalleryApp.Database
         #region Row methods
         public async Task<int> AddRow(IDbPictureData pictureData)
         {
-            return await database.InsertOrReplaceAsync (pictureData).ConfigureAwait (false);
+            return await database.InsertAsync (pictureData).ConfigureAwait (false);
         }
 
         public async Task<int> DeleteRow(int id)
@@ -37,6 +37,15 @@ namespace TraceableGalleryApp.Database
                 .FirstOrDefaultAsync ()
                 .ConfigureAwait (false);
             return await database.DeleteAsync (row).ConfigureAwait (false);
+        }
+
+        public async Task<IList<IDbPictureData>> GetAll () 
+        {
+            var list = await database.Table<DbPictureData> ()
+                .ToListAsync()
+                .ConfigureAwait (false);
+
+            return list.ToList<IDbPictureData>();
         }
 
         public async Task<IDbPictureData> GetById (int id) 

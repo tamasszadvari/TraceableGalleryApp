@@ -10,6 +10,7 @@ using XLabs.Ioc;
 using XLabs.Platform.Device;
 using XLabs.Platform.Services.Geolocation;
 using XLabs.Platform.Services.Media;
+using TraceableGalleryApp.Utilities;
 
 namespace TraceableGalleryApp.ViewModels
 {
@@ -146,11 +147,14 @@ namespace TraceableGalleryApp.ViewModels
                             var y = location.Latitude;
 
                             var newPath = await _storageHandler.SaveAsync(mediaFile.Path);
-                            await _pictureDatabase.AddRow(new DbPictureData {
+                            var dbItem = new DbPictureData {
                                 Path = newPath,
                                 XPosition = x,
                                 YPosition = y
-                            });
+                            };
+                            await _pictureDatabase.AddRow(dbItem);
+
+                            MessagingCenter.Send(this,StringConstants.NewPictureTakenSysMessage,dbItem.Path);
 
                             return mediaFile;
                         } 

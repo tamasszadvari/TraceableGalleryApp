@@ -61,7 +61,7 @@ namespace TraceableGalleryApp.ViewModels
                     var path = (ImgSource as FileImageSource).File;
                     var dbItem = await _pictureDatabase.GetByPath(path);
                     dbItem.Labels = _jsonHelper.Serialize(newLabels);
-                    _pictureDatabase.UpdateValue(dbItem);
+                    await _pictureDatabase.UpdateValue(dbItem);
 
                     AddText = "";
                 })); 

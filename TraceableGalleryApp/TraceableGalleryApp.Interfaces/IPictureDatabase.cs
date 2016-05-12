@@ -7,6 +7,7 @@ namespace TraceableGalleryApp.Interfaces
     {
         Task<int> AddRow(IDbPictureData pictureData);
         Task<int> DeleteRow(int id);
+        Task<IList<IDbPictureData>> GetAll();
         Task<IDbPictureData> GetById (int id);
         Task<IDbPictureData> GetByPath (string path);
         Task<IList<IDbPictureData>> GetByAnyLabel (IList<string> labels);
