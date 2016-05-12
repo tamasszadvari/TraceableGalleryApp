@@ -14,6 +14,8 @@ namespace TraceableGalleryApp.Interfaces
         Task<IDbPictureData> GetByPosition (double x, double y);
         Task<IList<IDbPictureData>> GetByCenterAndRadius (double x, double y, double radius);
         Task<IList<IDbPictureData>> GetByRectangle (double bottomLeftX, double bottomLeftY, double topRightX, double topRightY);
+        Task<IList<string>> GetAllLabels();
+        Task<bool> IsLabelExists(string label);
         Task<int> UpdateValue(IDbPictureData pictureData);
     }
 }

@@ -2,6 +2,7 @@
 using TraceableGalleryApp.Interfaces;
 using TraceableGalleryApp.Utilities;
 using TraceableGalleryApp.ViewModels;
+using TraceableGalleryApp.Views;
 using TraceableGalleryApp.Views.Pages;
 using Xamarin.Forms;
 
@@ -27,6 +28,7 @@ namespace TraceableGalleryApp
         {
             viewFactory.Register<CameraViewModel, CameraPage> ();
             viewFactory.Register<GalleryViewModel, ImageGalleryPage> ();
+            viewFactory.Register<PictureViewModel, PicturePage> ();
         }
 
         protected override void ConfigureApplication(IContainer container)

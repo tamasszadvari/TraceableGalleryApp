@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SQLite.Net.Async;
 using TraceableGalleryApp.Database.Models;
 using TraceableGalleryApp.Interfaces;
+using System;
 
 namespace TraceableGalleryApp.Database
 {
@@ -13,11 +14,14 @@ namespace TraceableGalleryApp.Database
     public class PictureDatabase : IPictureDatabase
     {
         readonly SQLiteAsyncConnection database;
+        readonly IJsonHelper _jsonHelper;
 
-        public PictureDatabase (ISQLite db)
+        public PictureDatabase (ISQLite db, IJsonHelper jsonHelper)
         {
             database = db.GetConnection ();
             database.CreateTableAsync<DbPictureData> ();
+
+            _jsonHelper = jsonHelper;
         }   
 
         #region Row methods
@@ -45,10 +49,17 @@ namespace TraceableGalleryApp.Database
 
         public async Task<IDbPictureData> GetByPath (string path) 
         {
-            return await database.Table<DbPictureData> ()
-                .Where (x => x.Path == path)
-                .FirstOrDefaultAsync ()
-                .ConfigureAwait (false);
+            try {
+                return await database.Table<DbPictureData> ()
+                    .Where (x => x.Path == path)
+                    .FirstOrDefaultAsync ()
+                    .ConfigureAwait (false);    
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
 
         public async Task<IList<IDbPictureData>> GetByAnyLabel (IList<string> labels) 
@@ -100,6 +111,34 @@ namespace TraceableGalleryApp.Database
                 .ConfigureAwait (false);
 
             return list.ToList<IDbPictureData>();
+        }
+
+        public async Task<IList<string>> GetAllLabels () 
+        {
+            var list = await database.Table<DbPictureData>()
+                .ToListAsync()
+                .ConfigureAwait(false);
+            var labelGroups = list.Select(x => x.Labels);
+
+            IEnumerable<string> ret = new List<string>();
+            foreach (var group in labelGroups)
+            {
+                if (group != null)
+                {
+                    var labels = _jsonHelper.Deserialize<List<string>> (group);
+                    if (labels != null && labels.Any())
+                        ret = ret.Union(labels);   
+                }
+            }
+
+            return (IList<string>)ret;
+        }
+
+        public async Task<bool> IsLabelExists(string label)
+        {
+            var labels = await GetAllLabels();
+
+            return labels.Contains(label);
         }
 
         public async Task<int> UpdateValue(IDbPictureData pictureData)

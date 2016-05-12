@@ -1,11 +1,4 @@
-﻿using System.Diagnostics;
-using TraceableGalleryApp.Utilities;
-using TraceableGalleryApp.ViewModels;
-using TraceableGalleryApp.Views.Pages;
-using Xamarin.Forms;
-using XLabs.Forms.Mvvm;
-using XLabs.Ioc;
-using XLabs.Platform.Mvvm;
+﻿using Xamarin.Forms;
 
 namespace TraceableGalleryApp
 {

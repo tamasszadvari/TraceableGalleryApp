@@ -6,13 +6,22 @@
 		 x:Class="TraceableGalleryApp.Views.Pages.ImageGalleryPage"
 		 Title="Image Gallery">
 	<ContentPage.Content>
+		<StackLayout Orientation="Vertical">
+			<StackLayout Orientation="Horizontal">
+				<Entry Placeholder="Search for label"
+					HorizontalOptions="FillAndExpand"
+					Text = "{Binding SearchText, Mode=TwoWay}">
+				</Entry>
+				<Button Text="Search" 
+					Command = "{Binding SearchByLabelCommand}"/>
+			</StackLayout>
 			<controls:GridView
 							x:Name="ImageGrid"
 							ItemsSource="{Binding Images}"
 							ItemWidth="{Binding ImageWidth}"
 							ItemHeight="{Binding ImageWidth}"
 							HorizontalOptions="Fill"
-							VerticalOptions="Fill"
+							VerticalOptions="FillAndExpand"
 							BackgroundColor="Transparent"
 							ColumnSpacing="3">
 				<controls:GridView.ItemTemplate>
@@ -34,5 +43,6 @@
 					</DataTemplate>
 				</controls:GridView.ItemTemplate>
 			</controls:GridView>
+		</StackLayout>
 	</ContentPage.Content>
 </ContentPage>
